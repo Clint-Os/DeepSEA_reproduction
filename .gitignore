@@ -1,3 +1,8 @@
 ./environment-cpu.yml
+# Ignore CV split FASTA files
+Data/merged/cv_folds
+Data/merged/*.fasta
+Data/merged/train_test_split 
 Data/merged/
-environment-macos.yml
+environment-macos.yml 
+
