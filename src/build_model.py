@@ -46,7 +46,7 @@ def protein_cnn_model(
     model = models.Model(inputs=inputs, outputs=outputs, name='protein_cnn_model')
     
     # Compile the model
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='categorical_cross_entropy', metrics=['accuracy'])
     
     return model
 

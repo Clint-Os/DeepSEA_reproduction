@@ -3,6 +3,7 @@ from keras import layers
 from pathlib import Path
 from Bio import SeqIO
 from keras.layers import StringLookup
+import numpy as np 
 
 #standard amino acids alphabet
 AMINO_ACIDS = list("ACDEFGHIKLMNPQRSTVWY")
@@ -18,12 +19,21 @@ tokenizer = StringLookup(
     num_oov_indices=1,
 )
 
-def tokenize_sequence(seq:str, max_len: int = 512):
-    tokens = tokenizer(tf.constant([seq]))
-    tokens = tf.squeeze(tokens, axis=0)
-    tokens = tokens [:max_len]
-    token_shape = tokens.shape[0]
-    tokens = tf.pad(tokens, [[0, tf.cast(max_len - token_shape, tf.int32)]], constant_values=0)
+def tokenize_sequence(seq:str, max_len: int = 512) -> tf.Tensor:
+
+    char_list = list(seq)
+    if len(char_list) == 0:
+        tokens = tf.constant([], dtype=tf.int32)
+    else:
+        char_tensor = tf.constant(char_list, dtype=tf.string)
+        tokens = tokenizer(char_tensor)
+        tokens = tf.cast(tokens, tf.int32) 
+
+    tokens = tf.strided_slice(tokens, [0], [max_len]) # Truncate if necessary
+    pad_len = max_len - tf.gather(tf.shape(tokens), 0)
+    tokens = tf.pad(tokens, [[0, pad_len]], constant_values=0)
+    
+    tokens.set_shape([max_len]) 
     return tokens
 
 def tokenize_fasta(fasta_path: Path, max_len: int = 512):
@@ -35,10 +45,9 @@ def tokenize_fasta(fasta_path: Path, max_len: int = 512):
         sequences.append(tokens)
         labels.append(label)
 
-    X = tf.stack(sequences)
+    X = np.stack([seq.numpy() for seq in sequences])
+    y = np.array(labels)
     return X, labels 
-
-# Add this near the bottom of tokenizer.py
 
 # Reverse lookup: id → token
 index_to_token = StringLookup(
