@@ -7,3 +7,4 @@ Data/merged/
 environment-macos.yml 
 __pycache__/
 *.pyc
+*.keras 
