@@ -14,6 +14,8 @@ NUM_CLASSES = 10
 BATCH_SIZE = 32
 EPOCHS = 10
 SAVE_DIR = Path("models/protein_cnn")
+MODELPATH = SAVE_DIR / "protein_cnn_model.keras"
+LABELS_PATH = SAVE_DIR / "label_to_index.json"
 
 def main():
     #load data
@@ -38,7 +40,7 @@ def main():
     )
     
     model.compile(    
-    optimizer=Adam(lr=0.001),
+    optimizer=Adam(learning_rate=0.001),
     loss='categorical_crossentropy',
     metrics=['accuracy']
     ) 
