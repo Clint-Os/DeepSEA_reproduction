@@ -16,22 +16,24 @@ CONFIG_PATH = MODEL_DIR / "model_config.json"
 
 def load_model_and_labels():
     print("Loading model...")
-    if CONFIG_PATH.exists() and WEIGHTS_PATH.exists():
+    model = None
+
+    if MODEL_PATH.exists():
+        # FALLBACK TO FULL MODEL
+        print("Loading model from Keras model file...")
+        model = load_model(str(MODEL_PATH))
+
+    elif CONFIG_PATH.exists() and WEIGHTS_PATH.exists():
         print("Loading model from config and weights...")
         with open(CONFIG_PATH, 'r') as f:
             config_json = f.read()
         #patch for Keras 3/TF 2.17+
         config_json = config_json.replace('"Functional"', '"Model"')
 
-        model = model_from_json(config_json)
+        model = model_from_json(config_json, custom_objects={"Model": model})
         if not model:
             raise ValueError("Failed to load model from configuration.")
         model.load_weights(str(WEIGHTS_PATH))
-
-    elif MODEL_PATH.exists():
-        # FALLBACK TO FULL MODEL
-        print("Loading model from Keras model file...")
-        model = load_model(str(MODEL_PATH))
     
     else:
         raise FileNotFoundError("No model files found.")
