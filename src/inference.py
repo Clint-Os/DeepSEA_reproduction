@@ -11,8 +11,6 @@ from keras.models import load_model, model_from_json
 MODEL_DIR = Path("models/protein_cnn")
 MODEL_PATH = MODEL_DIR / "protein_cnn_model.keras"
 LABELS_PATH = MODEL_DIR / "label_to_index.json"
-WEIGHTS_PATH = MODEL_DIR / "protein_cnn_weights.h5"
-CONFIG_PATH = MODEL_DIR / "model_config.json"
 
 def load_model_and_labels():
     print("Loading model...")
@@ -23,21 +21,9 @@ def load_model_and_labels():
         print("Loading model from Keras model file...")
         model = load_model(str(MODEL_PATH))
 
-    elif CONFIG_PATH.exists() and WEIGHTS_PATH.exists():
-        print("Loading model from config and weights...")
-        with open(CONFIG_PATH, 'r') as f:
-            config_json = f.read()
-        #patch for Keras 3/TF 2.17+
-        config_json = config_json.replace('"Functional"', '"Model"')
+    else: 
+        raise FileNotFoundError("No model file found. Export the model with model.save().")
 
-        model = model_from_json(config_json, custom_objects={"Model": model})
-        if not model:
-            raise ValueError("Failed to load model from configuration.")
-        model.load_weights(str(WEIGHTS_PATH))
-    
-    else:
-        raise FileNotFoundError("No model files found.")
-    
     with open(LABELS_PATH, 'r') as f:
         label_to_index = json.load(f)
     index_to_label = {v: k for k, v in label_to_index.items()}
