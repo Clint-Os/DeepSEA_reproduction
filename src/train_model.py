@@ -3,7 +3,9 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from keras.optimizers import Adam
+from keras import models
 from tokenizer import tokenize_fasta
+import json as json_module
 from build_model import protein_cnn_model 
 
 
@@ -14,10 +16,18 @@ NUM_CLASSES = 10
 BATCH_SIZE = 32
 EPOCHS = 10
 SAVE_DIR = Path("models/protein_cnn")
-MODELPATH = SAVE_DIR / "protein_cnn_model.keras"
+MODEL_PATH = SAVE_DIR / "protein_cnn_model.keras"
 LABELS_PATH = SAVE_DIR / "label_to_index.json"
 
 def main():
+    if MODEL_PATH.exists() and LABELS_PATH.exists():
+        print(f"Model already exists at {MODEL_PATH}, skipping training..")
+        model = models.load_model(MODEL_PATH)
+        
+        with open(LABELS_PATH) as f:
+            label_to_index = json_module.load(f)
+        print("Model and label mapping loaded...")
+        return model, label_to_index
     #load data
     print("Loading and tokenizing data...")
     X, labels = tokenize_fasta(FASTA_PATH, max_len=MAX_LEN)
