@@ -7,10 +7,21 @@ from keras import models
 from tokenizer import tokenize_fasta
 import json as json_module
 from build_model import protein_cnn_model 
+import os 
 
 
 #config
-FASTA_PATH = Path("Data/merged/merged_crossval_training.fasta")
+DRIVE_FASTA = Path("/content/drive/MyDrive/DeepSEA-project/Data/merged/merged_crossval_training.fasta")
+LOCAL_FASTA = Path("Data/merged/merged_crossval_training.fasta")
+
+if os.path.exists(DRIVE_FASTA):
+    FASTA_PATH = DRIVE_FASTA
+    print(f"using GOOGLE DRIVE fasta file: {FASTA_PATH}")
+elif os.path.exists(LOCAL_FASTA):
+    FASTA_PATH = LOCAL_FASTA
+else:
+    raise FileNotFoundError("No FASTA file found in either location.")
+
 MAX_LEN = 512
 NUM_CLASSES = 10
 BATCH_SIZE = 32
