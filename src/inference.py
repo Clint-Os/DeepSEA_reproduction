@@ -21,7 +21,7 @@ def load_model_and_labels():
         with open(CONFIG_PATH, 'r') as f:
             config_json = f.read()
         #patch for Keras 3/TF 2.17+
-        config_json = config_json.replace("'Functional'", '"Model"')
+        config_json = config_json.replace('"Functional"', '"Model"')
 
         model = model_from_json(config_json)
         if not model:
