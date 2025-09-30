@@ -20,6 +20,9 @@ def load_model_and_labels():
         print("Loading model from config and weights...")
         with open(CONFIG_PATH, 'r') as f:
             config_json = f.read()
+        #patch for Keras 3/TF 2.17+
+        config_json = config_json.replace("'Functional'", '"Model"')
+
         model = model_from_json(config_json)
         if not model:
             raise ValueError("Failed to load model from configuration.")
