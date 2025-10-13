@@ -14,10 +14,10 @@ import os
 DRIVE_FASTA = Path("/content/drive/MyDrive/DeepSEA-project/Data/merged/merged_crossval_training.fasta")
 LOCAL_FASTA = Path("Data/merged/merged_crossval_training.fasta")
 
-if os.path.exists(DRIVE_FASTA):
+if DRIVE_FASTA.exists():
     FASTA_PATH = DRIVE_FASTA
     print(f"using GOOGLE DRIVE fasta file: {FASTA_PATH}")
-elif os.path.exists(LOCAL_FASTA):
+elif LOCAL_FASTA.exists():
     FASTA_PATH = LOCAL_FASTA
 else:
     raise FileNotFoundError("No FASTA file found in either location.")
