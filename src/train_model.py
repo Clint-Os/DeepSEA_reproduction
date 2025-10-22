@@ -33,7 +33,7 @@ LABELS_PATH = SAVE_DIR / "label_to_index.json"
 def main():
     if MODEL_PATH.exists() and LABELS_PATH.exists():
         print(f"Model already exists at {MODEL_PATH}, skipping training..")
-        model = models.load_model(MODEL_PATH)
+        model = models.load_model(MODEL_PATH, compile=False)
         
         with open(LABELS_PATH) as f:
             label_to_index = json_module.load(f)
