@@ -6,11 +6,21 @@ from tokenizer import tokenize_sequence
 from keras import models
 import argparse 
 from keras.models import load_model, model_from_json 
-# Removed redundant and incorrect import
 
-MODEL_DIR = Path("models/protein_cnn")
-MODEL_PATH = MODEL_DIR / "protein_cnn_model.keras"
-LABELS_PATH = MODEL_DIR / "label_to_index.json"
+# --- Auto-detect environment ---
+DRIVE_MODEL = Path("/content/drive/MyDrive/DeepSEA-project/models/protein_cnn/protein_cnn_model.keras")
+LOCAL_MODEL = Path("models/protein_cnn/protein_cnn_model.keras")
+
+if DRIVE_MODEL.exists():
+    MODEL_PATH = DRIVE_MODEL
+    LABELS_PATH = DRIVE_MODEL.parent / "label_to_index.json"
+    print(f"Using model from Google Drive: {MODEL_PATH}")
+elif LOCAL_MODEL.exists():
+    MODEL_PATH = LOCAL_MODEL
+    LABELS_PATH = LOCAL_MODEL.parent / "label_to_index.json"
+    print(f"Using local model: {MODEL_PATH}")
+else:
+    raise FileNotFoundError("No model file found in either location.")
 
 def load_model_and_labels():
     print("Loading model...")
