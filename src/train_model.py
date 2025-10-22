@@ -26,7 +26,7 @@ MAX_LEN = 512
 NUM_CLASSES = 10
 BATCH_SIZE = 32
 EPOCHS = 10
-SAVE_DIR = Path("models/protein_cnn")
+SAVE_DIR = Path("/content/drive/MyDrive/DeepSEA-project/models/protein_cnn")
 MODEL_PATH = SAVE_DIR / "protein_cnn_model.keras"
 LABELS_PATH = SAVE_DIR / "label_to_index.json"
 
