@@ -53,7 +53,7 @@ def predict_sequence(seq: str, max_len: int = 512):
     pred_index = int(np.argmax(probs)) # Get the index of the highest probability
     pred_label = index_to_label[pred_index]
 
-    return pred_label, probs[0] 
+    return pred_label, float(probs[pred_index]) 
 
 def explain_predictions(seq: str, max_len: int = 512, top_k:int=3):
     model, index_to_label = load_model_and_labels()
