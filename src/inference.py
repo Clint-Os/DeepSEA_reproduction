@@ -50,7 +50,7 @@ def predict_sequence(seq: str, max_len: int = 512):
     
     #predict
     probs = model.predict(tokenized_seq, verbose = 0)[0]
-    pred_index = int(np.argmax(probs, axis=1)[0]) # Get the index of the highest probability
+    pred_index = int(np.argmax(probs)) # Get the index of the highest probability
     pred_label = index_to_label[pred_index]
 
     return pred_label, probs[0] 
@@ -68,7 +68,7 @@ def explain_predictions(seq: str, max_len: int = 512, top_k:int=3):
     # Get top-k predictions
     top_k_indices = np.argsort(probs)[-top_k:][::-1]
     top_k_labels = [index_to_label[idx] for idx in top_k_indices]
-    top_k_probs = [float(probs[0][idx]) for idx in top_k_indices]
+    top_k_probs = [float(probs[idx]) for idx in top_k_indices]
 
     explanations = {label: prob for label, prob in zip(top_k_labels, top_k_probs)}
     return explanations
@@ -86,7 +86,7 @@ def main():
 
     explanations = explain_predictions(args.seq, args.max_len, args.top_k)
     print(f"Top-{args.top_k} predictions:")
-    for label, score in explanations:
+    for label, score in explanations.items():
         print(f"{label}: {score:.4f}")
 
 if __name__ == "__main__":
